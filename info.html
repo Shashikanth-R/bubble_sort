@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bubble Sort - Virtual Lab</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+    }
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 8px;
+    }
+    p, li {
+      line-height: 1.6;
+      color: #555;
+    }
+    code, pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      display: block;
+      overflow-x: auto;
+    }
+    ol {
+      color: #555;
+      margin-left: 20px;
+    }
+    ul {
+      margin-left: 20px;
+    }
+    .flow-diagram {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .flow-diagram img {
+      max-width: 100%;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+    }
+    .try-box, .quiz-box {
+      background-color: #eefaf0;
+      border-left: 6px solid #4CAF50;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    .button-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #eee;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Bubble Sort - Virtual Lab</h1>
+</header>
+
+<main>
+  <section id="definition">
+    <h2>Definition</h2>
+    <p>Bubble Sort is a simple sorting algorithm that works by repeatedly swapping the adjacent elements if they are in the wrong order. This process is repeated until the array is sorted.</p>
+  </section>
+
+  <section id="theory">
+    <h2>Theory & Complexity Derivation</h2>
+    <p>
+      Bubble Sort compares adjacent elements and swaps them if they are in the wrong order. It keeps repeating this process until the list is sorted. Each iteration pushes the largest unsorted value to the end, just like bubbles rising to the surface—hence the name.
+      Start from the first element.
+      <p>Step by step process
+<ol>
+1)Compare the current element with the next one.
+</ol><ol>
+2)If the current element is greater, swap them.
+</ol><ol>
+  3)Move to the next pair and repeat the process until the end of the array.
+</ol><ol>
+4)This completes one pass — the largest element bubbles to the end.
+</ol><ol>
+5)Repeat the same process for the remaining elements (excluding the last one, which is already sorted).
+</ol><ol>
+6)Continue until no more swaps are needed
+</ol></p>
+    </p>
+
+    <h3>Time Complexity</h3>
+    <ul>
+      <li>Each pass through the array requires n - i - 1 comparisons</li>
+      <li>The total number of passes is n - 1</li>
+    </ul>
+    <p>Total comparisons = (n - 1) + (n - 2) + ... + 1 = n(n - 1)/2 = O(n²)</p>
+
+    <p><strong>Best Case:</strong> O(n) (if array is already sorted with optimized version)<br>
+       <strong>Average Case:</strong> O(n²)<br>
+       <strong>Worst Case:</strong> O(n²)</p>
+
+    <h3>Space Complexity</h3>
+    <p>
+      Bubble Sort is an in-place sorting algorithm that doesn’t use any extra space.
+      <br><strong>Space Complexity:</strong> O(1)
+    </p>
+  </section>
+
+  <section id="example">
+    <h2>Step-by-Step Example</h2>
+    <p><strong>Input Array:</strong> [5, 1, 4, 2, 8]</p>
+    <ol>
+      <li>
+        First Pass:
+        <ul>
+          <li>Compare 5 and 1 → swap → [1, 5, 4, 2, 8]</li>
+          <li>Compare 5 and 4 → swap → [1, 4, 5, 2, 8]</li>
+          <li>Compare 5 and 2 → swap → [1, 4, 2, 5, 8]</li>
+          <li>Compare 5 and 8 → no swap</li>
+        </ul>
+      </li>
+      <li>
+        Second Pass:
+        <ul>
+          <li>Compare 1 and 4 → no swap</li>
+          <li>Compare 4 and 2 → swap → [1, 2, 4, 5, 8]</li>
+          <li>Compare 4 and 5 → no swap</li>
+        </ul>
+      </li>
+      <li>
+        Third Pass:
+        <ul>
+          <li>Compare 1 and 2 → no swap</li>
+          <li>Compare 2 and 4 → no swap</li>
+        </ul>
+      </li>
+    </ol>
+    <p><strong>Final Sorted Array:</strong> [1, 2, 4, 5, 8]</p>
+
+    <div class="flow-diagram">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif" alt="Bubble Sort Flow Diagram">
+      <p><em>Flow of bubble sort - visual demonstration</em></p>
+    </div>
+  </section>
+
+  <section id="algorithm">
+    <h2>Algorithm</h2>
+    <pre><code>
+// INPUT: An array of n elements
+// OUTPUT: The array sorted in non-decreasing order
+
+BubbleSort(arr[], n)
+  for i = 0 to n-1
+    for j = 0 to n-i-2
+      if arr[j] > arr[j+1]
+        swap arr[j] and arr[j+1]
+    </code></pre>
+  </section>
+
+  <section id="applications">
+    <h2>Applications</h2>
+    <ul>
+      <li>Simple educational examples to demonstrate sorting</li>
+      <li>Useful when array is mostly sorted and small</li>
+      <li>Real-time scenarios where simplicity is preferred over efficiency</li>
+    </ul>
+  </section>
+
+  <section class="try-box">
+    <h2>💡 Try It Yourself</h2>
+    <p>Click below to test and run Bubble Sort in your own code environment:</p>
+    <a href="index.html" class="button-link" target="_blank">Open Try-It-Yourself Editor</a>
+  </section>
+
+  <section class="quiz-box" style="margin: 30px; width: 90%; max-width: 700px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h2>🧠 Quick Quiz</h2>
+    <ol>
+      <li style="margin-bottom: 20px;">
+        What is the time complexity of Bubble Sort in the worst case?<br />
+        <button onclick="toggleAnswer('q1')">Show Answer</button>
+        <p id="q1" style="display: none; margin-top: 10px;"><strong>O(n²)</strong></p>
+      </li>
+
+      <li style="margin-bottom: 20px;">
+        Can Bubble Sort be optimized?<br />
+        <button onclick="toggleAnswer('q2')">Show Answer</button>
+        <p id="q2" style="display: none; margin-top: 10px;"><strong>Yes</strong>, by adding a flag to check if any swaps occurred in the current pass.</p>
+      </li>
+
+      <li style="margin-bottom: 20px;">
+        What is the space complexity of Bubble Sort?<br />
+        <button onclick="toggleAnswer('q3')">Show Answer</button>
+        <p id="q3" style="display: none; margin-top: 10px;"><strong>O(1)</strong>, as it is an in-place sorting algorithm.</p>
+      </li>
+
+      <li style="margin-bottom: 20px;">
+        Is Bubble Sort stable?<br />
+        <button onclick="toggleAnswer('q4')">Show Answer</button>
+        <p id="q4" style="display: none; margin-top: 10px;"><strong>Yes</strong>, because it does not change the relative order of equal elements.</p>
+      </li>
+    </ol>
+  </section>
+</main>
+
+<script>
+  function toggleAnswer(id) {
+    const answer = document.getElementById(id);
+    answer.style.display = (answer.style.display === "none" || answer.style.display === "") ? "block" : "none";
+  }
+</script>
+
+<footer>
+  <p>&copy; 2025 Virtual Lab - Bubble Sort Concept</p>
+</footer>
+
+</body>
+</html>

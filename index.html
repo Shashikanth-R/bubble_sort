@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bubble Sort</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #333;
+    }
+
+    .controls {
+      margin: 20px;
+    }
+
+    .controls button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: #0b7dda;
+    }
+
+    #array-input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      margin: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    #container-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    #array-container {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      height: 300px;
+      margin: 30px 0;
+      width: 600px;
+      border: 2px dashed #ccc;
+      padding: 10px;
+      background: white;
+    }
+
+    .bar {
+      margin: 0 2px;
+      background-color: #4CAF50;
+      width: 30px;
+      transition: height 0.3s, background-color 0.3s;
+      border-radius: 5px 5px 0 0;
+      position: relative;
+    }
+
+    .bar-value {
+      position: absolute;
+      bottom: 100%;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .x-axis-label {
+      position: absolute;
+      top: 100%;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      margin-top: 4px;
+      color: #555;
+    }
+
+    #explanation {
+      margin: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 700px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 16px;
+      color: #333;
+    }
+
+    #stats-box {
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      font-size: 16px;
+      color: #333;
+      min-width: 200px;
+      margin-top: 20px;
+    }
+
+    #stats-box p {
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bubble Sort</h1>
+  <header style="padding: 15px;">
+    <a href="info.html" style="
+      background-color: #2196F3;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    ">
+      Back
+    </a>
+  </header>
+
+  <div class="controls">
+    <button onclick="generateArray()">Generate Random Array</button>
+    <input type="text" id="array-input" placeholder="Enter numbers separated by commas" />
+    <button onclick="inputArray()">Use Input Array</button>
+    <button onclick="startSort()">Start Sorting</button>
+    <button onclick="stepSort()">Step</button>
+    <button onclick="resetSort()">Reset</button>
+  </div>
+
+  <div id="container-wrapper">
+    <div id="array-container"></div>
+    <div id="stats-box">
+      <h3>Statistics</h3>
+      <p id="swap-count">Swaps: 0</p>
+      <p id="comparison-count">Comparisons: 0</p>
+    </div>
+  </div>
+
+  <div id="explanation">Click "Start Sorting" or "Step" to begin.</div>
+
+  <script>
+    let array = [];
+    let bars = [];
+    let i = 0, j = 0;
+    let sorting = false;
+    let interval;
+    let sorted = false;
+
+    let swaps = 0;
+    let comparisons = 0;
+
+    function updateStats() {
+      document.getElementById("swap-count").innerText = `Swaps: ${swaps}`;
+      document.getElementById("comparison-count").innerText = `Comparisons: ${comparisons}`;
+    }
+
+    function generateArray() {
+      array = Array.from({ length: 10 }, () => Math.floor(Math.random() * 90 + 10));
+      drawArray();
+      resetSort();
+    }
+
+    function inputArray() {
+      const input = document.getElementById("array-input").value;
+      const values = input.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+      if (values.length === 0) {
+        alert("Please enter a valid array of numbers separated by commas.");
+        return;
+      }
+      array = values;
+      drawArray();
+      resetSort();
+    }
+
+    function drawArray() {
+      const container = document.getElementById("array-container");
+      container.innerHTML = "";
+      bars = [];
+      array.forEach((value, index) => {
+        const bar = document.createElement("div");
+        bar.classList.add("bar");
+        bar.style.height = `${value * 3}px`;
+
+        const valueLabel = document.createElement("div");
+        valueLabel.classList.add("bar-value");
+        valueLabel.innerText = value;
+
+        const xLabel = document.createElement("div");
+        xLabel.classList.add("x-axis-label");
+        xLabel.innerText = index;
+
+        bar.appendChild(valueLabel);
+        bar.appendChild(xLabel);
+        container.appendChild(bar);
+        bars.push(bar);
+      });
+    }
+
+    function updateExplanation(text) {
+      document.getElementById("explanation").innerText = text;
+    }
+
+    function highlightBars(index1, index2) {
+      bars.forEach((bar, index) => {
+        if (index === index1 || index === index2) {
+          bar.style.backgroundColor = "orange";
+        } else {
+          bar.style.backgroundColor = "#4CAF50";
+        }
+      });
+    }
+
+    function stepSort() {
+      if (sorted) {
+        updateExplanation("Array is sorted.");
+        bars.forEach(bar => bar.style.backgroundColor = "green");
+        return;
+      }
+
+      if (i < array.length - 1) {
+        if (j < array.length - i - 1) {
+          comparisons++;
+          highlightBars(j, j + 1);
+          updateExplanation(`Comparing index ${j} (value: ${array[j]}) with index ${j + 1} (value: ${array[j + 1]})`);
+          if (array[j] > array[j + 1]) {
+            [array[j], array[j + 1]] = [array[j + 1], array[j]];
+            swaps++;
+            drawArray();
+            highlightBars(j, j + 1);
+            updateExplanation(`Swapped index ${j} and ${j + 1}`);
+          }
+          j++;
+        } else {
+          j = 0;
+          i++;
+        }
+      } else {
+        sorted = true;
+        updateExplanation("Array is sorted.");
+        bars.forEach(bar => bar.style.backgroundColor = "green");
+      }
+
+      updateStats();
+    }
+
+    function startSort() {
+      if (sorting) return;
+      sorting = true;
+      interval = setInterval(() => {
+        stepSort();
+        if (sorted) {
+          clearInterval(interval);
+          sorting = false;
+        }
+      }, 800);
+    }
+
+    function resetSort() {
+      clearInterval(interval);
+      sorting = false;
+      sorted = false;
+      i = 0;
+      j = 0;
+      swaps = 0;
+      comparisons = 0;
+      updateStats();
+      drawArray();
+      updateExplanation("Click \"Start Sorting\" or \"Step\" to begin.");
+    }
+
+    generateArray();
+  </script>
+</body>
+</html>
